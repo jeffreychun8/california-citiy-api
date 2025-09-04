@@ -1,0 +1,227 @@
+async function fetchAQI(zip) {
+    var apiKey = "E3228C70-922F-4BB9-91A4-3123D1B03BE7";
+    var url = "https://www.airnowapi.org/aq/observation/zipCode/current/?format=application/json&zipCode=" 
+              + zip + "&distance=25&API_KEY=" + apiKey;
+
+    try {
+        var response = await fetch(url);      // fetch data from API
+        var data = await response.json();     // convert to JSON
+        console.log(data);                    // check the data in browser console
+        return data;                          // return data to use later
+    } catch (error) {
+        console.error("Error fetching AQI data:", error);
+        return null;
+    }
+}
+
+const cities = [
+  { name: "Arden Arcade-Del Paso Manor", zip: "95815" },
+  { name: "Auburn", zip: "95603" },
+  { name: "Colfax", zip: "95713" },
+  { name: "Cool", zip: "95614" },
+  { name: "Davis", zip: "95616" },
+  { name: "Elk Grove", zip: "95758" },
+  { name: "Folsom", zip: "95630" },
+  { name: "Natomas", zip: "95834" },
+  { name: "North Highlands", zip: "95660" },
+  { name: "Placerville", zip: "95667" },
+  { name: "Rio Vista", zip: "94571" },
+  { name: "Roseville-Rocklin", zip: "95678" },
+  { name: "Sacramento", zip: "95814" },
+  { name: "Sloughhouse", zip: "95683" },
+  { name: "Vacaville", zip: "95687" },
+  { name: "Woodland", zip: "95776" },
+  { name: "Fairfield", zip: "94533" },
+  { name: "Fremont", zip: "94536" },
+  { name: "Livermore", zip: "94550" },
+  { name: "Napa", zip: "94558" },
+  { name: "Oakland", zip: "94601" },
+  { name: "Redwood City", zip: "94061" },
+  { name: "San Francisco", zip: "94102" },
+  { name: "San Jose", zip: "95112" },
+  { name: "San Rafael", zip: "94901" },
+  { name: "Santa Rosa", zip: "95401" },
+  { name: "Antelope Vly", zip: "93535" },
+  { name: "Anza Vly", zip: "92539" },
+  { name: "Banning", zip: "92220" },
+  { name: "Barstow", zip: "92311" },
+  { name: "Big Bear Lake", zip: "92315" },
+  { name: "C San Bernardino M", zip: "92401" },
+  { name: "C San Bernardino", zip: "92410" },
+  { name: "Capistrano Vly", zip: "92675" },
+  { name: "Central Coastal", zip: "93401" },
+  { name: "Central LA CO", zip: "90012" },
+  { name: "Central Orange", zip: "92868" },
+  { name: "Coachella Vly", zip: "92201" },
+  { name: "E San Bernardino", zip: "92404" },
+  { name: "E San Fernando Vly", zip: "91352" },
+  { name: "E San Gabriel Vly", zip: "91776" },
+  { name: "East Riverside CO", zip: "92501" },
+  { name: "Hesperia", zip: "92345" },
+  { name: "Lake Elsinore", zip: "92530" },
+  { name: "Metro Riverside CO", zip: "92507" },
+  { name: "N Coastal Orange", zip: "92660" },
+  { name: "North Orange CO", zip: "92865" },
+  { name: "NW Coastal LA", zip: "90066" },
+  { name: "NW San Bernardino", zip: "92407" },
+  { name: "Perris Vly", zip: "92570" },
+  { name: "Phelan", zip: "92371" },
+  { name: "S Central LA CO", zip: "90011" },
+  { name: "S San Gabriel Vly", zip: "91754" },
+  { name: "Saddleback Vly", zip: "92688" },
+  { name: "San Gabriel Mts", zip: "91011" },
+  { name: "Santa Clarita Vly", zip: "91351" },
+  { name: "South Coastal LA", zip: "90045" },
+  { name: "Southeast LA CO", zip: "90022" },
+  { name: "SW Coastal LA", zip: "90034" },
+  { name: "SW San Bernardino", zip: "92376" },
+  { name: "Temecula Vly", zip: "92590" },
+  { name: "Trona", zip: "93562" },
+  { name: "Twentynine Palms", zip: "92277" },
+  { name: "Victorville", zip: "92392" },
+  { name: "W San Bernardino M", zip: "92373" },
+  { name: "W San Fernando Vly", zip: "91367" },
+  { name: "W San Gabriel Vly", zip: "91789" },
+  { name: "San Diego Coast", zip: "92101" },
+  { name: "San Diego Foothills", zip: "92119" },
+  { name: "San Diego Mesa and Inland Valley", zip: "92120" },
+  { name: "Ojai", zip: "93023" },
+  { name: "Oxnard", zip: "93030" },
+  { name: "Piru", zip: "93040" },
+  { name: "Simi Valley", zip: "93063" },
+  { name: "Thousand Oaks", zip: "91360" },
+  { name: "Atascadero", zip: "93422" },
+  { name: "Carrizo Plains", zip: "93426" },
+  { name: "Morro Bay", zip: "93442" },
+  { name: "Nipomo", zip: "93444" },
+  { name: "Paso Robles", zip: "93446" },
+  { name: "Red Hills", zip: "93452" },
+  { name: "San Luis Obispo", zip: "93401" },
+  { name: "Carmel Valley", zip: "93924" },
+  { name: "Davenport", zip: "95017" },
+  { name: "Hollister", zip: "95023" },
+  { name: "King City", zip: "93930" },
+  { name: "Monterey Peninsula", zip: "93940" },
+  { name: "Pinnacles National Monument", zip: "95043" },
+  { name: "Salinas", zip: "93901" },
+  { name: "San Lorenzo Valley", zip: "95033" },
+  { name: "Santa Cruz", zip: "95060" },
+  { name: "Scotts Valley", zip: "95066" },
+  { name: "Watsonville", zip: "95076" },
+  { name: "Carpinteria", zip: "93013" },
+  { name: "Gaviota Coast", zip: "93117" },
+  { name: "Goleta", zip: "93117" },
+  { name: "Lompoc", zip: "93436" },
+  { name: "Paradise Road", zip: "93452" },
+  { name: "Santa Barbara", zip: "93101" },
+  { name: "Santa Maria", zip: "93454" },
+  { name: "Santa Ynez", zip: "93460" },
+  { name: "Bakersfield", zip: "93301" },
+  { name: "Fresno", zip: "93721" },
+  { name: "Hanford", zip: "93230" },
+  { name: "Madera", zip: "93637" },
+  { name: "Merced", zip: "95340" },
+  { name: "Modesto", zip: "95354" },
+  { name: "Stockton", zip: "95202" },
+  { name: "Visalia", zip: "93291" },
+  { name: "Bishop", zip: "93514" },
+  { name: "Chester", zip: "96020" },
+  { name: "Chico", zip: "95928" },
+  { name: "Concord", zip: "94518" },
+  { name: "Death Valley National Park", zip: "92328" },
+  { name: "Eureka", zip: "95501" },
+  { name: "Fort Bragg", zip: "95437" },
+  { name: "Gridley", zip: "95948" },
+  { name: "Imperial Valley", zip: "92243" },
+  { name: "Joshua Tree National Park", zip: "92252" },
+  { name: "Lassen Volcanic National Park", zip: "96089" },
+  { name: "Lincoln", zip: "95648" },
+  { name: "Mammoth Lakes", zip: "93546" },
+  { name: "Mono Lake", zip: "93541" },
+  { name: "Owens Lake", zip: "93514" },
+  { name: "Paradise", zip: "95967" },
+  { name: "Portola", zip: "96122" },
+  { name: "Quincy", zip: "95971" },
+  { name: "Red Bluff", zip: "96080" },
+  { name: "Redding", zip: "96001" },
+  { name: "South Lake Tahoe", zip: "96150" },
+  { name: "Tahoe City area", zip: "96145" },
+  { name: "Truckee", zip: "96161" },
+  { name: "Western Nevada County", zip: "95959" },
+  { name: "Willits", zip: "95490" },
+  { name: "Willows", zip: "95988" },
+  { name: "Yosemite National Park", zip: "95389" },
+  { name: "Yucca Vly", zip: "92284" }
+];
+
+
+
+function updateDateTime() {
+  const now = new Date();
+  const date = now.toLocaleDateString(); 
+  const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); 
+ 
+  
+  document.getElementById('dateTime').textContent = `${date}, ${time}`;
+}
+
+
+updateDateTime();
+
+
+setInterval(updateDateTime, 1000);
+
+
+
+function populateDropdown() {
+    const dropdown = document.getElementById("cityDropdown");
+
+    cities.forEach(function(city) {
+    const option = document.createElement("option");
+    option.value = city.zip;
+    option.textContent = city.name;
+    dropdown.appendChild(option);
+    });
+  }
+populateDropdown();
+
+function addCity() {
+    var dropdown = document.getElementById("cityDropdown");
+    var selectedZip = dropdown.value;                   
+    var selectedCityName = dropdown.options[dropdown.selectedIndex].text; 
+    var cityContainer = document.querySelector(".js-add-city");
+
+    if (selectedZip) {
+        // Check for duplicates
+        var existingCities = cityContainer.querySelectorAll("div");
+        for (var city of existingCities) {
+            if (city.textContent === selectedCityName) {
+                alert(selectedCityName + " is already added!");
+                return;
+            }
+        }
+
+        // Append the city name
+        var cityItem = document.createElement("div");
+        cityItem.textContent = selectedCityName;
+        cityContainer.appendChild(cityItem);
+
+        // Fetch AQI for this city
+        var aqiData = fetchAQI(selectedZip);
+        aqiData.then(function(data) {
+            if (data && data.length > 0) {
+                var aqiValue = data[0].AQI;
+                var aqiCategory = data[0].Category.Name;
+
+                var aqiItem = document.createElement("div");
+                aqiItem.textContent = "AQI: " + aqiValue + " (" + aqiCategory + ")";
+                cityItem.appendChild(aqiItem);
+            } else {
+                var aqiItem = document.createElement("div");
+                aqiItem.textContent = "AQI data not available";
+                cityItem.appendChild(aqiItem);
+            }
+        });
+    }
+}
+
