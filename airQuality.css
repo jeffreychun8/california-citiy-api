@@ -1,0 +1,94 @@
+.css-title{
+
+    font-size:40px;
+    font-family:arial;
+    font-weight:bold;
+
+
+
+}
+
+.last-updated{
+
+    font-size:25px;
+    font-family:Arial;
+
+
+}
+
+.add-button{
+    color: white;
+    background-color:green;
+    font-size:20px;
+    font-family:arial;
+    border:none;
+    cursor:pointer;
+    padding: 10px;
+    margin-left: 20px;
+
+
+}
+
+.select-city-option{
+    
+    font-size:15px;
+    font-family:arial;
+    cursor:pointer;
+    height:42px;
+    padding-left:10px;
+}
+
+
+.cities-button{
+
+    margin-top:25px;
+    font-size: 25px;
+    font-family:arial;
+    font-weight:bold;
+    margin-bottom:15px;
+}
+
+
+.js-add-city{
+    font-size:15px;
+    font-family:arial;
+
+
+}
+
+.city-name{
+color:white;
+font-size:25px;
+font-family:arial;
+margin-bottom: 5px;
+
+}
+
+.city-aqi{
+color:white;
+font-size:20px;
+font-family:arial;
+margin-bottom: 3px;
+
+}
+
+.city-ozone{
+color:white;
+font-size:20px;
+font-family:arial;
+margin-bottom: 10px;
+
+}
+
+
+
+/*background color aqi*/
+.green-bg { background-color: green; color: black; padding: 5px; }
+.yellow-bg { background-color: yellow; color: black; padding: 5px; }
+.orange-bg { background-color: orange; color: black; padding: 5px; }
+.red-bg { background-color: red; color: white; padding: 5px; }
+.darkred-bg { background-color: darkred; color: white; padding: 5px; }
+
+
+
+body{background-color:rgb(22, 171, 221);}
