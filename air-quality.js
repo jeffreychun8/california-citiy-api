@@ -16,6 +16,7 @@ async function fetchAQI(zip) {
 
 async function fetchForecast(zip){
     var apiKey = "E3228C70-922F-4BB9-91A4-3123D1B03BE7";
+    //endpoint line
     var url = "https://www.airnowapi.org/aq/forecast/zipCode/?format=application/json&zipCode="
             + zip + "&distance=25&API_KEY=" + apiKey;
 
@@ -206,7 +207,8 @@ function populateDropdown() {
 populateDropdown();
 
 //add city to the div, show current and forecasted AQI (O3 or PM2.5)
-function addCity() {
+// Add city to the div, show current and forecasted AQI (O3 or PM2.5)
+async function addCity() {
     var dropdown = document.getElementById("cityDropdown");
     var selectedZip = dropdown.value;                   
     var selectedCityName = dropdown.options[dropdown.selectedIndex].text; 
@@ -221,65 +223,163 @@ function addCity() {
                 return;
             }
         }
+    }
 
-        // Create container for city
-        var cityItem = document.createElement("div");
-        cityItem.classList.add("city-item");
-        cityItem.value = selectedZip;
-        cityContainer.appendChild(cityItem);
+    // create container for city
+    var cityItem = document.createElement("div");
+    cityItem.classList.add("city-item");
+    cityItem.value = selectedZip;
 
-        // City name
-        var cityNameDiv = document.createElement("div");
-        cityNameDiv.textContent = selectedCityName;
-        cityNameDiv.classList.add("city-name");
-        cityItem.appendChild(cityNameDiv);
+    // City name
+    var cityNameDiv = document.createElement("div");
+    cityNameDiv.textContent = selectedCityName;
+    cityNameDiv.classList.add("city-name");
 
-        // Fetch, show current 
-        fetchAQI(selectedZip).then(function(data) {
-            var currentDiv = document.createElement("div");
-            currentDiv.classList.add("city-current");
+    // delete button
+    var deleteButton = document.createElement("button");
+    deleteButton.textContent = "✖";
+    deleteButton.classList.add("delete-button");
+    deleteButton.addEventListener("click", function () {
+        cityContainer.removeChild(cityItem);
+    });
 
-            if (data && data.length > 0) {
-                for (var i = 0; i < data.length; i++) {
-                    var aqiValue = data[i].AQI;
+    // append name and delete button to cityItem
+    cityItem.appendChild(cityNameDiv);
+    cityItem.appendChild(deleteButton);
 
-                    if (data[i].ParameterName === "O3") {
-                        currentDiv.textContent = "Today's AQI (Ozone 3): " + aqiValue;
-                        break;
-                    } else if (data[i].ParameterName === "PM2.5") {
-                        currentDiv.textContent = "Today's AQI (PM2.5): " + aqiValue;
-                        break;
-                    }
-                }
-            } else {
-                currentDiv.textContent = "Current AQI data not available";
+    // append cityItem to container
+    cityContainer.appendChild(cityItem);
+
+    
+    const currentData = await fetchAQI(selectedZip);
+    const currentDiv = document.createElement("div");
+    currentDiv.classList.add("city-current");
+
+    // check for first o3 and first PM2.5
+    let foundO3 = false;
+    let foundPM25 = false;
+
+    if (currentData && currentData.length > 0) {
+        for (let i = 0; i < currentData.length; i++) {
+            const { AQI: aqiValue, ParameterName } = currentData[i];
+
+            // finding the first O3 in endpoint
+            if (!foundO3 && ParameterName.toUpperCase() === "O3") {
+                const ozoneDiv = document.createElement("div");
+                ozoneDiv.classList.add("currentOzone-class");
+                ozoneDiv.textContent = "Today's AQI (Ozone 3): " + aqiValue;
+
+                // add color bar changing according to aqi value
+                const ozoneColorDiv = document.createElement("div");
+                ozoneColorDiv.classList.add("aqiColorBar");
+                ozoneColorDiv.textContent = aqiValue;
+                const categoryText = getAQICategory(aqiValue);
+                ozoneColorDiv.title = categoryText; // creates the tooltip
+                ozoneColorDiv.setAttribute("data-tooltip", categoryText);
+                aqiCategory(aqiValue, ozoneColorDiv); // color selecting function
+
+                cityItem.appendChild(ozoneDiv);
+                cityItem.appendChild(ozoneColorDiv);
+
+                foundO3 = true;
             }
 
-            cityItem.appendChild(currentDiv);
-        });
+            // first PM2.5
+            if (!foundPM25 && ParameterName.toUpperCase().replace(".", "") === "PM25") {
+                const pm25Div = document.createElement("div");
+                pm25Div.classList.add("currentPm25-class");
+                pm25Div.textContent = "Today's AQI (PM2.5): " + aqiValue;
+                cityItem.appendChild(pm25Div);
 
-        // Fetch, show forecast
-        fetchForecast(selectedZip).then(function(data) {
-            var forecastDiv = document.createElement("div");
-            forecastDiv.classList.add("city-forecast");
-
-            if (data && data.length > 0) {
-                for (var i = 0; i < data.length; i++) {
-                    var aqiValue = data[i].AQI;
-
-                    if (data[i].ParameterName === "O3") {
-                        forecastDiv.textContent = "Forecasted AQI (Ozone 3) Tomorrow: " + aqiValue;
-                        break;
-                    } else if (data[i].ParameterName === "PM2.5") {
-                        forecastDiv.textContent = "Forecasted AQI (PM2.5) Tomorrow: " + aqiValue;
-                        break;
-                    }
-                }
-            } else {
-                forecastDiv.textContent = "Forecasted AQI data not available";
+                foundPM25 = true;
             }
 
-            cityItem.appendChild(forecastDiv);
-        });
+            // stop loop if both found
+            if (foundO3 && foundPM25) break;
+        }
+    }
+
+    // Show no data if neither o3 nor pm25 found
+    if (!foundO3 && !foundPM25) {
+        currentDiv.classList.add("currentNoData");
+        currentDiv.textContent = "Current AQI data not available";
+        cityItem.appendChild(currentDiv);
+    }
+
+    // Forecast aqi
+    const forecastData = await fetchForecast(selectedZip);
+    const forecastDiv = document.createElement("div");
+    forecastDiv.classList.add("city-forecast");
+
+    let foundForecastO3 = false;
+    let foundForecastPM25 = false;
+
+    if (forecastData && forecastData.length > 0) {
+        for (let i = 0; i < forecastData.length; i++) {
+            const { AQI: aqiValue, ParameterName } = forecastData[i];
+
+            // first forecast O3
+            if (!foundForecastO3 && ParameterName.toUpperCase() === "O3") {
+                const div = document.createElement("div");
+                div.classList.add("forecastOzone-class");
+                div.textContent = "Forecasted AQI (Ozone 3) Tomorrow: " + aqiValue;
+                forecastDiv.appendChild(div);
+                foundForecastO3 = true;
+            }
+
+            // first forecast PM2.5
+            if (!foundForecastPM25 && ParameterName.toUpperCase().replace(".", "") === "PM25") {
+                const div = document.createElement("div");
+                div.classList.add("forecastPm25-class");
+                div.textContent = "Forecasted AQI (PM2.5) Tomorrow: " + aqiValue;
+                forecastDiv.appendChild(div);
+                foundForecastPM25 = true;
+            }
+
+            // stop loop if both found
+            if (foundForecastO3 && foundForecastPM25) break;
+        }
+    }
+
+    // Show no data if neither o3 or pm25 found
+    if (!foundForecastO3 && !foundForecastPM25) {
+        forecastDiv.classList.add("forecastNoData");
+        forecastDiv.textContent = "Forecasted AQI data not available";
+    }
+
+    cityItem.appendChild(forecastDiv);
+}
+
+
+function aqiCategory(aqiValue, element) {
+  
+    if (aqiValue >= 0 && aqiValue <= 50) {
+        element.classList.add("Green-aqi");
+    } else if (aqiValue > 50 && aqiValue <= 100) {
+        element.classList.add("Yellow-aqi");    
+    } else if (aqiValue > 100 && aqiValue <= 150) {
+        element.classList.add("Orange-aqi");    
+    } else if (aqiValue > 150 && aqiValue <= 200) {
+        element.classList.add("Red-aqi");
+    } else if(aqiValue > 200 && aqiValue <= 300) {   
+        element.classList.add("Purple-aqi");
+    } else {
+        element.classList.add("Maroon-aqi");
+       }}
+
+
+function getAQICategory(aqiValue) {
+    if (aqiValue >= 0 && aqiValue <= 50) {
+        return "Good";
+    } else if (aqiValue >= 51 && aqiValue <= 100) {
+        return "Moderate";
+    } else if (aqiValue >= 101 && aqiValue <= 150) {
+        return "Unhealthy for Sensitive Groups";
+    } else if (aqiValue >= 151 && aqiValue <= 200) {
+        return "Unhealthy";
+    } else if (aqiValue >= 201 && aqiValue <= 300) {
+        return "Very Unhealthy";
+    } else {
+        return "Hazardous";
     }
 }
