@@ -2,28 +2,26 @@
 <html>
   <head>
     <title>California City Air Quality</title>
-   <!---- <link rel ="stylesheet" href = "style/airQuality.css">-->
+  <link rel ="stylesheet" href = "airQuality.css">
 
   </head>
 
 
   <body>
-    <p>California City Air Quality</p>
-    <p>Last updated: <span id="dateTime"></span></p>
+    <p class = "css-title">California City Air Quality</p>
+    <p class= "last-updated">Last updated: <span id="dateTime"></span></p>
     
-      <select id="cityDropdown">
-      <option value="">Select a city...</option>    
+      <select id="cityDropdown" class=" select-city-option">
+      <option value="" >Select a city...</option>    
       </select>
 
-      <button onclick = "addCity()">Add City</button>
+      <button onclick = "addCity()" class = "add-button">Add City</button>
+      
 
-      <div class = "js-add-city">Cities:</div>
-
-  
-
-
-
-<div class = "js-todo-list todo-grid"></div>
+     
+      <div class="cities-button">Cities:</div>
+      
+      <div class = "js-add-city"></div>
 
 
 
