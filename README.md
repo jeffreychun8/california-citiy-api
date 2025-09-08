@@ -4,7 +4,7 @@ Features
 
 Real-time AQI Data: View current air quality conditions for Ozone (O3) and PM2.5
 Forecast Data: See tomorrow's predicted AQI values
-Visual Indicators: Color-coded AQI bars with tooltips showing air quality categories
+Visual Indicators: Color-coded AQI bars showing air quality categories
 Multiple Cities: Add and monitor multiple California cities simultaneously
 Responsive Design: Works on desktop and mobile devices
 Live Updates: Current date and time display with automatic refresh
@@ -38,11 +38,10 @@ Color-coded indicator bars with quality categories
 
 
 Remove Cities: Click the ✖ button on any city card to remove it
-Tooltips: Hover over the colored AQI bars to see quality descriptions
 
-AQI Color Scale
 The application uses EPA standard AQI colors:
-AQI RangeColorCategory0-50GreenGood51-100YellowModerate101-150OrangeUnhealthy for Sensitive Groups151-200RedUnhealthy201-300PurpleVery Unhealthy301+MaroonHazardous
+AQI RangeColorCategory 0-50 Green Good 51-100 Yellow Moderate 101-150 Orange Unhealthy for Sensitive Groups 151-200 Red Unhealthy 201-300 Purple Very Unhealthy 301+ Maroon Hazardous
+
 Supported Cities
 The application includes 150+ California cities and regions, including:
 Major Cities:
